@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"ginmall/util"
+	"ginmall/pkg/util/logging"
 	"os"
 
 	"strconv"
@@ -26,7 +26,7 @@ func Redis() {
 	_, err := client.Ping(context.Background()).Result()
 
 	if err != nil {
-		util.Log().Panic("连接Redis不成功", err)
+		logging.LogrusObj.Panic("连接Redis不成功", err)
 	}
 
 	RedisClient = client

@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"ginmall/util/log"
 	"os"
 	"time"
 
@@ -87,30 +86,6 @@ type Cache struct {
 	CacheExpires int64  `yaml:"cacheExpires"`
 	CacheWarmUp  bool   `yaml:"cacheWarmUp"`
 	CacheServer  string `yaml:"cacheServer"`
-}
-
-// Init 初始化配置项
-func InitLodding() {
-	// 从本地读取环境变量
-	// godotenv.Load()
-	// 读取配置文件
-	ReadConfig()
-	// 初始化Mysql
-
-	// 初始化日志
-	log.InitLog()
-	// 设置日志级别
-	// util.BuildLogger(os.Getenv("LOG_LEVEL"))
-
-	// 读取翻译文件
-	if err := LoadLocales("conf/locales/zh-cn.yaml"); err != nil {
-		log.LogrusObj.Panic("翻译文件加载失败", err)
-		// util.Log().Panic("翻译文件加载失败", err)
-	}
-
-	// 连接数据库
-	// model.Database(os.Getenv("MYSQL_DSN"))
-	// cache.Redis()
 }
 
 func ReadConfig() {

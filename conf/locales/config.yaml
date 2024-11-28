@@ -1,7 +1,7 @@
 system:
   domain: mall
   version: 1.0
-  env: "dev"
+  env: "debug"
   HttpPort: ":5001"
   Host: "localhost"
   UploadModel: "local"
