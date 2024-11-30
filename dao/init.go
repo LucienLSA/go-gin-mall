@@ -1,7 +1,10 @@
 package dao
 
 import (
+	"context"
+	"fmt"
 	"ginmall/conf"
+	"ginmall/pkg/util/logging"
 	"strings"
 	"time"
 
@@ -33,18 +36,18 @@ func InitMySQL() {
 	pathWrite := strings.Join([]string{mConfig.UserName, ":", mConfig.Password, "@tcp(", mConfig.DbHost, ":", mConfig.DbPort, ")/", mConfig.DbName, "?charset=" + mConfig.Charset + "&parseTime=true"}, "")
 
 	var ormLogger logger.Interface
-	if conf.Config.System.AppEnv == "debug" {
+	if conf.Config.System.RunMode == "debug" {
 		ormLogger = logger.Default.LogMode(logger.Info)
 	} else {
 		ormLogger = logger.Default
 	}
 
 	db, err := gorm.Open(mysql.New(mysql.Config{
-		DSN:                       pathRead,
-		DefaultStringSize:         256,   // string 类型字段的默认长度
-		DisableDatetimePrecision:  true,  // 禁用 datetime 精度，MySQL 5.6 之前的数据库不支持
-		DontSupportRenameIndex:    true,  // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
-		DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
+		DSN:                      pathRead,
+		DefaultStringSize:        256,  // string 类型字段的默认长度
+		DisableDatetimePrecision: true, // 禁用 datetime 精度，MySQL 5.6 之前的数据库不支持
+		DontSupportRenameIndex:   true, // 重命名索引时采用删除并新建的方式，MySQL 5.7 之前的数据库和 MariaDB 不支持重命名索引
+		// DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}), &gorm.Config{
 		Logger: ormLogger,
@@ -81,6 +84,16 @@ func InitMySQL() {
 	//打开
 	sqlDB.SetMaxOpenConns(50)
 	DB = db
+	DB = DB.Set("gorm:table_options", "charset=utf8")
+	err = Migration()
+	if err != nil {
+		logging.LogrusObj.Infoln("mysql migration error", err)
+		panic(err)
+	}
+	fmt.Println("mysql init success")
+}
 
-	migration()
+func NewDBClient(ctx context.Context) *gorm.DB {
+	db := DB
+	return db.WithContext(ctx)
 }

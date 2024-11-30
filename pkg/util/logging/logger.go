@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -38,13 +39,14 @@ func InitLog() {
 	// hook := es.EsHookLog()
 	// logger.AddHook(hook)
 	LogrusObj = logger
+	fmt.Println("日志初始化成功")
 }
 
 func setOutputFile() (*os.File, error) {
 	now := time.Now()
 	logFilePath := ""
 	if dir, err := os.Getwd(); err == nil {
-		logFilePath = dir + "/logs/"
+		logFilePath = dir + "/runtime/logs/"
 	}
 	_, err := os.Stat(logFilePath)
 	if os.IsNotExist(err) {

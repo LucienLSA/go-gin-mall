@@ -1,10 +1,12 @@
 system:
   domain: mall
   version: 1.0
-  env: "debug"
-  HttpPort: ":5001"
-  Host: "localhost"
-  UploadModel: "local"
+  runmode: "debug"
+  readTimeout: 60
+  writeTimeout: 60
+  httpPort: "5001"
+  host: "localhost"
+  uploadModel: "local"
 
 mysql:
   default:
@@ -22,6 +24,10 @@ redis:
   redisPort: 6379
   redisPassword: 
   redisNetwork: "tcp"
+  redisMaxIdle: 10
+  redisMinIdle: 1 
+  redisIdleTimeout: 180
+  redisMaxRetries: 3
 
 cache:
   cacheType: redis

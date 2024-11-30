@@ -1,17 +1,50 @@
 package model
 
 import (
+	"ginmall/conf"
+
+	"github.com/CocaineCong/secret"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 // User 用户模型
 type User struct {
 	gorm.Model
-	UserName       string
-	PasswordDigest string
-	Nickname       string
-	Status         string
-	Avatar         string `gorm:"size:1000"`
+	UserName       string `gorm:"unique"` // 用户名
+	Email          string // 邮箱
+	PasswordDigest string // 密码散列值
+	NickName       string // 昵称
+	Status         string // 状态
+	Avatar         string `gorm:"size:1000"` // 头像
+	Money          string // 余额
+	Relations      []User `gorm:"many2many:relation;"` // 关系
+}
+
+const (
+	PassWordCost        = 12       // 密码加密难度
+	Active       string = "active" // 激活用户
+)
+
+// EncryptMoney 加密金额 (参考 https://github.com/CocaineCong/secret)
+func (u *User) EncryptMoney(key string) (money string, err error) {
+	aesObj, err := secret.NewAesEncrypt(conf.Config.EncryptSecret.MoneySecret, key, "", secret.AesEncrypt128, secret.AesModeTypeCBC)
+	if err != nil {
+		return
+	}
+	money = aesObj.SecretEncrypt(u.Money)
+
+	return
+}
+
+// SetPassword 设置密码
+func (u *User) SetPassword(password string) error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), PassWordCost)
+	if err != nil {
+		return err
+	}
+	u.PasswordDigest = string(bytes)
+	return nil
 }
 
 // // GetUser 用ID获取用户

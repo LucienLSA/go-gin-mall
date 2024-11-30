@@ -1,6 +1,8 @@
 package conf
 
 import (
+	"fmt"
+	"ginmall/pkg/util/logging"
 	"os"
 	"time"
 
@@ -24,12 +26,14 @@ type Conf struct {
 }
 
 type System struct {
-	AppEnv      string `yaml:"appEnv"`
-	Domain      string `yaml:"domain"`
-	Version     string `yaml:"version"`
-	HttpPort    string `yaml:"httpPort"`
-	Host        string `yaml:"host"`
-	UploadModel string `yaml:"uploadModel"`
+	RunMode      string        `yaml:"runmode"`
+	Domain       string        `yaml:"domain"`
+	Version      string        `yaml:"version"`
+	HttpPort     string        `yaml:"httpPort"`
+	Host         string        `yaml:"host"`
+	UploadModel  string        `yaml:"uploadModel"`
+	ReadTimeout  time.Duration `yaml:"readTimeout"`
+	WriteTimeout time.Duration `yaml:"writeTimeout"`
 }
 
 type Oss struct {
@@ -59,12 +63,16 @@ type Email struct {
 }
 
 type Redis struct {
-	RedisHost     string `yaml:"redisHost"`
-	RedisPort     string `yaml:"redisPort"`
-	RedisUsername string `yaml:"redisUsername"`
-	RedisPassword string `yaml:"redisPwd"`
-	RedisDbName   int    `yaml:"redisDbName"`
-	RedisNetwork  string `yaml:"redisNetwork"`
+	RedisHost        string        `yaml:"redisHost"`
+	RedisPort        string        `yaml:"redisPort"`
+	RedisUsername    string        `yaml:"redisUsername"`
+	RedisPassword    string        `yaml:"redisPwd"`
+	RedisDbName      int           `yaml:"redisDbName"`
+	RedisNetwork     string        `yaml:"redisNetwork"`
+	RedisMaxIdle     int           `yaml:"redisMaxIdle"`     // 最大空闲连接数
+	RedisMinIdle     int           `yaml:"redisMinIdle"`     // 最小空闲连接数
+	RedisIdleTimeout time.Duration `yaml:"redisIdleTimeout"` // 空闲连接超时时间（秒）
+	RedisMaxRetries  int           `yaml:"redisMaxRetries"`  // 最大重试次数
 }
 
 // EncryptSecret 加密的东西
@@ -100,8 +108,11 @@ func ReadConfig() {
 	}
 	err = viper.Unmarshal(&Config)
 	if err != nil {
+		logging.LogrusObj.Infoln("读取配置文件失败", err)
 		panic(err)
 	}
+	fmt.Println("读取配置文件成功")
+
 }
 
 // 获取过期时间
