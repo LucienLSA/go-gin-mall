@@ -4,7 +4,7 @@ system:
   runmode: "debug"
   readTimeout: 60
   writeTimeout: 60
-  httpPort: "5001"
+  httpPort: ":5001"
   host: "localhost"
   uploadModel: "local"
 
@@ -48,8 +48,8 @@ encryptSecret:
 
 photoPath:
   photoHost: http://127.0.0.1
-  ProductPath: /static/imgs/product/
-  AvatarPath: /static/imgs/avatar/
+  ProductPath: /runtime/static/imgs/product/
+  AvatarPath: /runtime/static/imgs/avatar/
 
 oss:
   AccessKeyId:

@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/CocaineCong/secret v1.0.4
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/sessions v0.0.5

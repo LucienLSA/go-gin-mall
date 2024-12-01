@@ -2,6 +2,7 @@ package model
 
 import (
 	"ginmall/conf"
+	"ginmall/consts"
 
 	"github.com/CocaineCong/secret"
 	"golang.org/x/crypto/bcrypt"
@@ -45,6 +46,24 @@ func (u *User) SetPassword(password string) error {
 	}
 	u.PasswordDigest = string(bytes)
 	return nil
+}
+
+// CheckPassword 校验密码
+func (u *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.PasswordDigest), []byte(password))
+	return err == nil
+}
+
+// AvatarURL 获取头像URL
+func (u *User) AvatarURL() string {
+	// OSS上传模式
+	if conf.Config.System.UploadModel == consts.UploadModeOSS {
+		return u.Avatar
+	}
+	// 本地上传模式
+	pConfig := conf.Config.PhotoPath
+	return pConfig.PhotoHost + conf.Config.System.HttpPort + pConfig.AvatarPath + u.Avatar
+
 }
 
 // // GetUser 用ID获取用户

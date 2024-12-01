@@ -3,6 +3,7 @@ package v1
 import (
 	"errors"
 	"ginmall/consts"
+	"ginmall/pkg/e"
 	"ginmall/pkg/util/ctl"
 	"ginmall/pkg/util/logging"
 	"ginmall/service"
@@ -50,6 +51,26 @@ func UserRegisterHandler() gin.HandlerFunc {
 // 	}
 // }
 
+// 用户登录
+func UserLoginHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.UserLoginReq
+		if err := c.ShouldBind(&req); err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.UserLogin(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
 // // UserLogin 用户登录接口
 // func UserLogin(c *gin.Context) {
 // 	var service service.UserLoginService
@@ -60,6 +81,35 @@ func UserRegisterHandler() gin.HandlerFunc {
 // 		c.JSON(200, ErrorResponse(err))
 // 	}
 // }
+
+// 用户更新头像
+func UserAvatarHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.UserServiceReq
+		// 参数校验
+		if err := c.ShouldBind(&req); err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			return
+		}
+		file, fileHeader, _ := c.Request.FormFile("file")
+		if fileHeader == nil {
+			err := errors.New(e.GetMsg(e.ErrorUploadFile))
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			logging.LogrusObj.Infoln(err)
+			return
+		}
+		fileSize := fileHeader.Size
+		l := service.GetUserSrv()
+		resp, err := l.UserAvatarUpload(c.Request.Context(), &req, file, fileSize)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusInternalServerError, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
 
 // // UserMe 用户详情
 // func UserMe(c *gin.Context) {

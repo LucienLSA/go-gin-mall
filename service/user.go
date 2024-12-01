@@ -2,15 +2,18 @@ package service
 
 import (
 	"context"
+	"errors"
 	"ginmall/conf"
 	"ginmall/consts"
 	"ginmall/dao"
 	"ginmall/model"
+	"ginmall/pkg/util/ctl"
+	"ginmall/pkg/util/jwt"
 	"ginmall/pkg/util/logging"
+	"ginmall/pkg/util/upload"
 	"ginmall/types"
+	"mime/multipart"
 	"sync"
-
-	"github.com/pkg/errors"
 )
 
 var UserSrvIns *UserSrv
@@ -69,4 +72,83 @@ func (s *UserSrv) UserRegister(c context.Context, req *types.UserRegisterReq) (r
 		return
 	}
 	return
+}
+
+// 用户登录
+func (s *UserSrv) UserLogin(c context.Context, req *types.UserLoginReq) (resp interface{}, err error) {
+	var user *model.User
+	userDao := dao.NewUserDao(c)
+	// 查询用户是否存在
+	user, exist, err := userDao.ExistOrNotByUserName(req.UserName)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	if !exist {
+		logging.LogrusObj.Error(err)
+		return nil, errors.New("用户名不存在")
+	}
+	if !user.CheckPassword(req.Password) {
+		return nil, errors.New("密码/账号不正确")
+	}
+
+	accessToken, refreshToken, err := jwt.GenerateToken(user.ID, req.UserName)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	userResp := &types.UserInfoResp{
+		ID:        user.ID,
+		UserName:  user.UserName,
+		NickName:  user.NickName,
+		Avatar:    user.AvatarURL(),
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt.Unix(),
+	}
+
+	resp = &types.UserTokenData{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		User:         userResp,
+	}
+	return
+}
+
+// 上传更新头像
+func (s *UserSrv) UserAvatarUpload(c context.Context, req *types.UserServiceReq, file multipart.File, fileSize int64) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(c)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	uId := u.Id
+	userDao := dao.NewUserDao(c)
+	// 根据id查询用户是否存在
+	user, err := userDao.GetUserById(uId)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+
+	// 上传头像
+	var path string
+	if conf.Config.System.UploadModel == consts.UploadModeLocal {
+		path, err = upload.AvatarUploadToLocalStatic(file, uId, user.UserName)
+	} else {
+		// path, err := upload.UploadToQiNiu()
+	}
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+
+	// 获取头像
+	user.Avatar = path
+	err = userDao.UpdateUserById(uId, user)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	return
+
 }

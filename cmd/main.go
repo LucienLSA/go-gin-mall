@@ -71,7 +71,7 @@ func normalStarting() {
 	r := routers.NewRouter()
 	readTimeout := conf.Config.System.ReadTimeout
 	writeTimeout := conf.Config.System.WriteTimeout
-	endPoint := fmt.Sprintf("%s:%s", conf.Config.System.Host, conf.Config.System.HttpPort)
+	endPoint := fmt.Sprintf("%s%s", conf.Config.System.Host, conf.Config.System.HttpPort)
 	maxHeaderBytes := 1 << 20
 	// 正常启动服务
 	// err := r.Run(conf.Config.System.HttpPort)
@@ -93,7 +93,7 @@ func gracefulStartingAndClosing() {
 	endless.DefaultReadTimeOut = conf.Config.System.ReadTimeout
 	endless.DefaultWriteTimeOut = conf.Config.System.WriteTimeout
 	endless.DefaultMaxHeaderBytes = 1 << 20
-	endPoint := fmt.Sprintf("%s:%s", conf.Config.System.Host, conf.Config.System.HttpPort)
+	endPoint := fmt.Sprintf("%s%s", conf.Config.System.Host, conf.Config.System.HttpPort)
 	server := endless.NewServer(endPoint, routers.NewRouter())
 	server.BeforeBegin = func(add string) {
 		log.Println("Actual pid is ", syscall.Getpid())

@@ -36,6 +36,6 @@ const EncryptMoneyKeyLength = 6
 const UserInitMoney = "10000" // 初始金额 1个w
 
 const (
-	UserDefaultAvatarOss   = ""           // OSS的默认头像
-	UserDefaultAvatarLocal = "avatar.JPG" // OSS的默认头像
+	UserDefaultAvatarOss   = ""         // OSS的默认头像
+	UserDefaultAvatarLocal = "bear.jpg" // 本地的默认头像
 )

@@ -2,6 +2,8 @@ package routers
 
 import (
 	api "ginmall/api/v1"
+	"ginmall/middleware"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,10 +11,10 @@ import (
 // NewRouter 路由配置
 func NewRouter() *gin.Engine {
 	r := gin.Default()
-	// 中间件, 顺序不能改
-	// r.Use(middleware.Session("something-very-secret"))
-	// r.Use(middleware.Cors())
-	// r.StaticFS("/runtime/static", http.Dir("./runtime/static"))
+	r.Use(middleware.Session("something-very-secret"))
+	r.Use(middleware.Cors())
+	// 静态文件读取
+	r.StaticFS("/runtime", http.Dir("./runtime"))
 
 	v1 := r.Group("/api/v1")
 	{
@@ -21,15 +23,15 @@ func NewRouter() *gin.Engine {
 
 		// 用户操作
 		v1.POST("user/register", api.UserRegisterHandler())
-		// v1.POST("user/login", api.UserLoginHandler)
+		v1.POST("user/login", api.UserLoginHandler())
 
 		// 需要登录保护的
-		// auth := v1.Group("/")
-		// auth.Use(middleware.AuthRequired())
+		auth := v1.Group("/")
+		auth.Use(middleware.AuthRequired())
 		{
-			// User Routing
-			// auth.GET("user/me", api.UserLogin)
-			// auth.DELETE("user/logout", api.UserLogout)
+			// 用户操作
+			// 更新用户头像
+			auth.POST("user/avatar", api.UserAvatarHandler())
 		}
 	}
 	return r
