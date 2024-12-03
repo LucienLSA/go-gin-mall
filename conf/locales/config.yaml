@@ -48,11 +48,12 @@ encryptSecret:
 
 photoPath:
   photoHost: http://127.0.0.1
-  ProductPath: /runtime/static/imgs/product/
-  AvatarPath: /runtime/static/imgs/avatar/
+  productPath: /runtime/static/imgs/product/
+  avatarPath: /runtime/static/imgs/avatar/
+  qrcodePath: /runtime/static/imgs/qrcode/
 
 oss:
-  AccessKeyId:
-  AccessKeySecret:
-  BucketName:
-  QiNiuServer:
+  accessKeyId:
+  accessKeySecret:
+  bucketName:
+  qiNiuServer:

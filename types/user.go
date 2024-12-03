@@ -35,3 +35,10 @@ type UserTokenData struct {
 	AccessToken  string      `json:"access_token"`
 	RefreshToken string      `json:"refresh_token"`
 }
+
+type UserUpdateInfoReq struct {
+	NickName string `form:"nick_name" json:"nick_name"`
+	UserName string `form:"user_name" json:"user_name"`
+	Password string `form:"password" json:"password"`
+	Key      string `form:"key" json:"key"` // 前端进行判断
+}

@@ -87,6 +87,7 @@ type LocalPhotoPath struct {
 	PhotoHost   string `yaml:"photoHost"`
 	ProductPath string `yaml:"productPath"`
 	AvatarPath  string `yaml:"avatarPath"`
+	QrcodePath  string `yaml:"qrcodePath"`
 }
 
 type Cache struct {
@@ -112,7 +113,6 @@ func ReadConfig() {
 		panic(err)
 	}
 	fmt.Println("读取配置文件成功")
-
 }
 
 // 获取过期时间

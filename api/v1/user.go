@@ -111,6 +111,27 @@ func UserAvatarHandler() gin.HandlerFunc {
 	}
 }
 
+// 用户昵称修改
+func UserUpdateHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.UserUpdateInfoReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.UserInfoUpdate(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusInternalServerError, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
 // // UserMe 用户详情
 // func UserMe(c *gin.Context) {
 // 	user := CurrentUser(c)

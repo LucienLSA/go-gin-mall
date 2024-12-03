@@ -150,5 +150,26 @@ func (s *UserSrv) UserAvatarUpload(c context.Context, req *types.UserServiceReq,
 		return nil, err
 	}
 	return
+}
 
+// 用户昵称修改
+func (s *UserSrv) UserInfoUpdate(c context.Context, req *types.UserUpdateInfoReq) (resp interface{}, err error) {
+	// 找用户
+	u, _ := ctl.GetUserInfo(c)
+	userDao := dao.NewUserDao(c)
+	// 根据id查询用户是否存在
+	user, err := userDao.GetUserById(u.Id)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	if req.NickName != "" {
+		user.NickName = req.NickName
+	}
+	err = userDao.UpdateUserById(u.Id, user)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	return
 }

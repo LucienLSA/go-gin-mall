@@ -6,7 +6,10 @@ import (
 	"ginmall/conf"
 	"ginmall/pkg/e"
 	"ginmall/pkg/util/ctl"
+	"ginmall/pkg/util/qrcode"
+	"net/http"
 
+	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"
 )
@@ -25,4 +28,25 @@ func ErrorResponse(ctx *gin.Context, err error) *ctl.TrackedErrorResponse {
 	}
 
 	return ctl.RespError(ctx, err, err.Error(), e.ERROR)
+}
+
+const (
+	QRCODE_URL = "https://lucienlsa.github.io/docsify-blog.github.io/#/README"
+)
+
+// 生成二维码
+func GenerateQrcode(ctx *gin.Context) {
+	qr := qrcode.NewQrCode(QRCODE_URL, 300, 300, qr.M, qr.Auto)
+	path := qrcode.GetQrCodePath()
+	fmt.Println(path)
+	name := qrcode.GetQrCodeFileName(qr.URL) + qr.GetQrCodeExt()
+	_, _, err := qr.Encode(path)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, ErrorResponse(ctx, err))
+		return
+	}
+	ctx.JSON(http.StatusOK, ctl.RespSuccess(ctx, map[string]string{
+		"poster_url":      qrcode.GetQrCodeFullUrl(name),
+		"poster_save_url": path + name,
+	}))
 }

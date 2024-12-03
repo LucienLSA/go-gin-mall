@@ -20,6 +20,8 @@ func NewRouter() *gin.Engine {
 	{
 		// 测试连通
 		v1.GET("/ping", api.Ping)
+		// 生成二维码
+		v1.POST("/qrcode", api.GenerateQrcode)
 
 		// 用户操作
 		v1.POST("user/register", api.UserRegisterHandler())
@@ -32,6 +34,8 @@ func NewRouter() *gin.Engine {
 			// 用户操作
 			// 更新用户头像
 			auth.POST("user/avatar", api.UserAvatarHandler())
+			// 更新用户信息
+			auth.POST("user/update", api.UserUpdateHandler())
 		}
 	}
 	return r

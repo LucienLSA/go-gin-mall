@@ -26,7 +26,6 @@ func main() {
 	// gin.SetMode(os.Getenv("GIN_MODE"))
 	// 初始化路由
 	InitRoutes()
-	fmt.Println("启动成功...")
 }
 
 // Init 初始化配置项
@@ -60,9 +59,9 @@ func InitRoutes() {
 	// 注册路由
 	gin.SetMode(conf.Config.System.RunMode)
 	// 正常启动
-	normalStarting()
+	// normalStarting()
 	// 优雅启动和关闭
-	// gracefulStartingAndClosing()
+	gracefulStartingAndClosing()
 
 }
 
@@ -90,8 +89,8 @@ func normalStarting() {
 }
 func gracefulStartingAndClosing() {
 	gin.SetMode(conf.Config.System.RunMode)
-	endless.DefaultReadTimeOut = conf.Config.System.ReadTimeout
-	endless.DefaultWriteTimeOut = conf.Config.System.WriteTimeout
+	endless.DefaultReadTimeOut = conf.Config.System.ReadTimeout * time.Second
+	endless.DefaultWriteTimeOut = conf.Config.System.WriteTimeout * time.Second
 	endless.DefaultMaxHeaderBytes = 1 << 20
 	endPoint := fmt.Sprintf("%s%s", conf.Config.System.Host, conf.Config.System.HttpPort)
 	server := endless.NewServer(endPoint, routers.NewRouter())
