@@ -37,9 +37,9 @@ cache:
 
 email:
   address: http://localhost:8080/#/vaild/email/
-  smtpHost:
-  smtpEmail:
-  smtpPass:
+  smtpHost: smtp.qq.com
+  smtpEmail: 1020263522@qq.com
+  smtpPass: rcufkuscufntbdac
 
 encryptSecret:
   jwtSecret: "FanOne666Secret"

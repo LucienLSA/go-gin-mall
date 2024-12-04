@@ -132,6 +132,68 @@ func UserUpdateHandler() gin.HandlerFunc {
 	}
 }
 
+func ShowUserInfoHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.UserInfoShowReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.UserInfoShow(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusInternalServerError, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
+// 绑定邮箱
+func BindEmailHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.BindEmailServiceReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.BindEmail(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusInternalServerError, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
+// 验证邮箱
+func VerifyEmailHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.VerifyEmailServiceReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusBadRequest, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetUserSrv()
+		resp, err := l.VerifyEmail(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusInternalServerError, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
 // // UserMe 用户详情
 // func UserMe(c *gin.Context) {
 // 	user := CurrentUser(c)

@@ -79,3 +79,45 @@ func ParseRefreshToken(aToken, rToken string) (newAToken, newRToken string, err 
 	// 如果都过期
 	return "", "", errors.New("身份过期，重新登录")
 }
+
+// EmailClaims
+type EmailClaims struct {
+	UserID        uint   `json:"user_id"`
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	OperationType uint   `json:"operation_type"`
+	jwt.StandardClaims
+}
+
+// 生成邮箱验证token
+func GenerateEmailToken(userID, Operation uint, email, password string) (string, error) {
+	nowTime := time.Now()
+	// 十五分钟有效
+	expireTime := nowTime.Add(15 * time.Minute)
+	claims := EmailClaims{
+		UserID:        userID,
+		Email:         email,
+		Password:      password,
+		OperationType: Operation,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expireTime.Unix(),
+			Issuer:    "gin-mall",
+		},
+	}
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, err := tokenClaims.SignedString(jwtSecret)
+	return token, err
+}
+
+// 验证邮箱验证token
+func ParseEmailToken(token string) (*EmailClaims, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &EmailClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+	if tokenClaims != nil {
+		if claims, ok := tokenClaims.Claims.(*EmailClaims); ok && tokenClaims.Valid {
+			return claims, nil
+		}
+	}
+	return nil, err
+}

@@ -3,11 +3,13 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"ginmall/conf"
 	"ginmall/consts"
 	"ginmall/dao"
 	"ginmall/model"
 	"ginmall/pkg/util/ctl"
+	"ginmall/pkg/util/email"
 	"ginmall/pkg/util/jwt"
 	"ginmall/pkg/util/logging"
 	"ginmall/pkg/util/upload"
@@ -170,6 +172,117 @@ func (s *UserSrv) UserInfoUpdate(c context.Context, req *types.UserUpdateInfoReq
 	if err != nil {
 		logging.LogrusObj.Error(err)
 		return nil, err
+	}
+	return
+}
+
+// UserInfoShow 用户信息展示
+func (s *UserSrv) UserInfoShow(c context.Context, req *types.UserInfoShowReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(c)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	user, err := dao.NewUserDao(c).GetUserById(u.Id)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	resp = &types.UserInfoResp{
+		ID:        user.ID,
+		UserName:  user.UserName,
+		NickName:  user.NickName,
+		Avatar:    user.AvatarURL(),
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt.Unix(),
+	}
+	return
+}
+
+// 绑定邮箱服务
+func (s *UserSrv) BindEmail(c context.Context, req *types.BindEmailServiceReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(c)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	var address string
+	token, err := jwt.GenerateEmailToken(u.Id, req.OpeartionType, req.Email, req.Password)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	binder := email.NewEmailBinder()
+	address = conf.Config.Email.Address + token
+	mailText := fmt.Sprintf(consts.EmailOperationMap[req.OpeartionType], address)
+	if err = binder.Bind(mailText, req.Email, "LucienMall绑定邮箱"); err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	return
+}
+
+// 验证邮箱
+func (s *UserSrv) VerifyEmail(c context.Context, req *types.VerifyEmailServiceReq) (resp interface{}, err error) {
+	var userId uint
+	var email string
+	var password string
+	var operationType uint
+	// 验证Token
+	if req.Token == "" {
+		err = errors.New("token为空")
+		logging.LogrusObj.Error(err)
+		return
+	}
+	claims, err := jwt.ParseEmailToken(req.Token)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	} else {
+		userId = claims.UserID
+		email = claims.Email
+		password = claims.Password
+		operationType = claims.OperationType
+	}
+	// 获取用户信息
+	userDao := dao.NewUserDao(c)
+	user, err := userDao.GetUserById(userId)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	// 根据OPerationType更新用户信息
+	switch operationType {
+	// 绑定邮箱
+	case consts.EmailOperationBinding:
+		user.Email = email
+	// 解绑邮箱
+	case consts.EmailOperationNoBinding:
+		user.Email = ""
+		// 更新密码
+	case consts.EmailOperationUpdatePassword:
+		err = user.SetPassword(password)
+		if err != nil {
+			logging.LogrusObj.Error(err)
+			return
+		}
+	default:
+		return nil, errors.New("操作不符合")
+	}
+	// 更新用户信息
+	err = userDao.UpdateUserById(userId, user)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	resp = &types.UserInfoResp{
+		ID:        user.ID,
+		UserName:  user.UserName,
+		NickName:  user.NickName,
+		Email:     user.Email,
+		Status:    user.Status,
+		Avatar:    user.AvatarURL(),
+		CreatedAt: user.CreatedAt.Unix(),
 	}
 	return
 }

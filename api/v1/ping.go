@@ -2,16 +2,15 @@ package v1
 
 import (
 	"ginmall/model"
-	"ginmall/serializer"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Ping 状态检查页面
 func Ping(c *gin.Context) {
-	c.JSON(200, serializer.Response{
-		Code: 0,
-		Msg:  "Pong",
+	c.JSON(http.StatusOK, gin.H{
+		"message": "pong",
 	})
 }
 

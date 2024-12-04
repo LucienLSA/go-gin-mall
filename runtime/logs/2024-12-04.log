@@ -1,0 +1,32 @@
+{"level":"error","msg":"Error 1146 (42S02): Table 'mall_db.product' doesn't exist","time":"2024-12-04 13:46:59"}
+{"level":"info","msg":"Error 1146 (42S02): Table 'mall_db.product' doesn't exist","time":"2024-12-04 13:46:59"}
+{"level":"error","msg":"gomail: could not send email 1: 550 The recipient may contain a non-existent account, please check the recipient address.","time":"2024-12-04 14:21:37"}
+{"level":"info","msg":"gomail: could not send email 1: 550 The recipient may contain a non-existent account, please check the recipient address.","time":"2024-12-04 14:21:37"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 14:45:41"}
+{"level":"error","msg":"token is expired by 7s","time":"2024-12-04 14:49:13"}
+{"level":"info","msg":"token is expired by 7s","time":"2024-12-04 14:49:13"}
+{"level":"error","msg":"token is expired by 13s","time":"2024-12-04 14:49:19"}
+{"level":"info","msg":"token is expired by 13s","time":"2024-12-04 14:49:19"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 14:51:09"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 14:51:16"}
+{"level":"error","msg":"token为空","time":"2024-12-04 15:02:02"}
+{"level":"info","msg":"token为空","time":"2024-12-04 15:02:02"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:02:39"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:03:30"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:03:38"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:03:41"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:03:47"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:11:55"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:12:01"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:16:18"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:11"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:20"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:22"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:24"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:26"}
+{"level":"info","msg":"操作类型错误","time":"2024-12-04 15:18:38"}
+{"level":"error","msg":"token为空","time":"2024-12-04 15:26:17"}
+{"level":"info","msg":"token为空","time":"2024-12-04 15:26:17"}
+{"level":"info","msg":"操作不符合","time":"2024-12-04 15:26:23"}
+{"level":"info","msg":"操作不符合","time":"2024-12-04 15:26:32"}
+{"level":"info","msg":"操作不符合","time":"2024-12-04 15:26:35"}

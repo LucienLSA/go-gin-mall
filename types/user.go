@@ -42,3 +42,17 @@ type UserUpdateInfoReq struct {
 	Password string `form:"password" json:"password"`
 	Key      string `form:"key" json:"key"` // 前端进行判断
 }
+
+type UserInfoShowReq struct {
+}
+
+type BindEmailServiceReq struct {
+	Email    string `form:"email" json:"email"`
+	Password string `form:"password" json:"password"`
+	// OpertionType 1:绑定邮箱 2：解绑邮箱 3：改密码
+	OpeartionType uint `form:"operation_type" json:"operation_type"`
+}
+
+type VerifyEmailServiceReq struct {
+	Token string `json:"token" form:"token"`
+}

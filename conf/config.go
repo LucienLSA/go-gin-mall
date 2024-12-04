@@ -56,10 +56,10 @@ type MySql struct {
 }
 
 type Email struct {
-	ValidEmail string `yaml:"validEmail"`
-	SmtpHost   string `yaml:"smtpHost"`
-	SmtpEmail  string `yaml:"smtpEmail"`
-	SmtpPass   string `yaml:"smtpPass"`
+	Address   string `yaml:"address"`
+	SmtpHost  string `yaml:"smtpHost"`
+	SmtpEmail string `yaml:"smtpEmail"`
+	SmtpPass  string `yaml:"smtpPass"`
 }
 
 type Redis struct {
