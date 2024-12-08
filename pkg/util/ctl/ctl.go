@@ -1,8 +1,7 @@
 package ctl
 
 import (
-	"ginmall/pkg/e"
-
+	"github.com/LucienLSA/go-gin-mall/pkg/e"
 	"github.com/gin-gonic/gin"
 )
 

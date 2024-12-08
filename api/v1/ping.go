@@ -1,8 +1,9 @@
 package v1
 
 import (
-	"ginmall/model"
 	"net/http"
+
+	"github.com/LucienLSA/go-gin-mall/model"
 
 	"github.com/gin-gonic/gin"
 )

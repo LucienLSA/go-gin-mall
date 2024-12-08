@@ -1,4 +1,5 @@
-module ginmall
+module github.com/LucienLSA/go-gin-mall
+
 
 go 1.20
 

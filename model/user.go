@@ -1,10 +1,9 @@
 package model
 
 import (
-	"ginmall/conf"
-	"ginmall/consts"
-
 	"github.com/CocaineCong/secret"
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/consts"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

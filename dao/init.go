@@ -3,11 +3,13 @@ package dao
 import (
 	"context"
 	"fmt"
-	"ginmall/conf"
-	"ginmall/pkg/util/logging"
+
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+
 	"strings"
 	"time"
 
+	"github.com/LucienLSA/go-gin-mall/conf"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

@@ -1,8 +1,7 @@
 package email
 
 import (
-	"ginmall/conf"
-
+	"github.com/LucienLSA/go-gin-mall/conf"
 	"gopkg.in/mail.v2"
 )
 

@@ -3,12 +3,13 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"ginmall/conf"
-	"ginmall/pkg/e"
-	"ginmall/pkg/util/ctl"
-	"ginmall/pkg/util/qrcode"
+
 	"net/http"
 
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/e"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/qrcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"

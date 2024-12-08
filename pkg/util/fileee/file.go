@@ -2,9 +2,11 @@ package fileee
 
 import (
 	"fmt"
-	"ginmall/pkg/util/logging"
+
 	"log"
 	"os"
+
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
 )
 
 // 判断文件夹存在

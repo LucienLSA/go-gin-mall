@@ -1,12 +1,13 @@
 package v1
 
 import (
-	"ginmall/pkg/util/ctl"
-	"ginmall/pkg/util/logging"
-	"ginmall/service"
-	"ginmall/types"
 	"net/http"
 
+	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+
+	"github.com/LucienLSA/go-gin-mall/service"
+	"github.com/LucienLSA/go-gin-mall/types"
 	"github.com/gin-gonic/gin"
 )
 

@@ -2,16 +2,19 @@ package service
 
 import (
 	"context"
-	"ginmall/conf"
-	"ginmall/consts"
-	"ginmall/dao"
-	"ginmall/model"
-	"ginmall/pkg/util/ctl"
-	"ginmall/pkg/util/logging"
-	"ginmall/pkg/util/upload"
-	"ginmall/types"
+
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+
 	"mime/multipart"
 	"sync"
+
+	"github.com/LucienLSA/go-gin-mall/consts"
+	"github.com/LucienLSA/go-gin-mall/dao"
+	"github.com/LucienLSA/go-gin-mall/model"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/upload"
+	"github.com/LucienLSA/go-gin-mall/types"
 )
 
 var ProductSrvIns *ProductSrv

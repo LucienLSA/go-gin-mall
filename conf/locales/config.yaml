@@ -36,7 +36,7 @@ cache:
   cacheServer:
 
 email:
-  address: http://localhost:8080/#/vaild/email/
+  address: /api/v1/verify_email # 邮件验证链接 需要通过其他路由进行验证提示（有待尝试）
   smtpHost: smtp.qq.com
   smtpEmail: 1020263522@qq.com
   smtpPass: rcufkuscufntbdac

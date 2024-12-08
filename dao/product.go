@@ -2,8 +2,8 @@ package dao
 
 import (
 	"context"
-	"ginmall/model"
 
+	"github.com/LucienLSA/go-gin-mall/model"
 	"gorm.io/gorm"
 )
 

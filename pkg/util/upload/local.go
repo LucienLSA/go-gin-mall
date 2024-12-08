@@ -2,12 +2,14 @@ package upload
 
 import (
 	"fmt"
-	"ginmall/conf"
-	"ginmall/pkg/util/fileee"
-	"ginmall/pkg/util/logging"
+
 	"io/ioutil"
 	"mime/multipart"
 	"strconv"
+
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/fileee"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
 )
 
 // AvatarUploadToLocalStatic 上传头像到本地静态目录

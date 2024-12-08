@@ -3,11 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"ginmall/cache"
-	"ginmall/conf"
-	"ginmall/dao"
-	"ginmall/pkg/util/logging"
-	"ginmall/routers"
+
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +11,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/LucienLSA/go-gin-mall/cache"
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/dao"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+	"github.com/LucienLSA/go-gin-mall/routers"
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 )

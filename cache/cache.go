@@ -3,9 +3,9 @@ package cache
 import (
 	"context"
 	"fmt"
-	"ginmall/conf"
-	"ginmall/pkg/util/logging"
 
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
 	"github.com/redis/go-redis/v9"
 )
 

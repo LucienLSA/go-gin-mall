@@ -1,12 +1,12 @@
 package middleware
 
 import (
-	"ginmall/consts"
-	"ginmall/pkg/e"
-	"ginmall/pkg/util/ctl"
-	"ginmall/pkg/util/jwt"
 	"net/http"
 
+	"github.com/LucienLSA/go-gin-mall/consts"
+	"github.com/LucienLSA/go-gin-mall/pkg/e"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/jwt"
 	"github.com/gin-gonic/gin"
 )
 

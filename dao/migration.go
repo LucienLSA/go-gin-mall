@@ -2,7 +2,8 @@ package dao
 
 import (
 	"fmt"
-	"ginmall/model"
+
+	"github.com/LucienLSA/go-gin-mall/model"
 )
 
 //执行数据迁移
@@ -12,6 +13,7 @@ func Migration() (err error) {
 	err = DB.AutoMigrate(
 		&model.User{},
 		&model.Product{},
+		&model.Favorite{},
 	)
 	fmt.Println("register stable success")
 	return

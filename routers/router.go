@@ -1,10 +1,10 @@
 package routers
 
 import (
-	api "ginmall/api/v1"
-	"ginmall/middleware"
 	"net/http"
 
+	api "github.com/LucienLSA/go-gin-mall/api/v1"
+	"github.com/LucienLSA/go-gin-mall/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +19,7 @@ func NewRouter() *gin.Engine {
 	v1 := r.Group("/api/v1")
 	{
 		// 测试连通
-		v1.GET("/ping", api.Ping)
+		v1.GET("/ping")
 		// 生成二维码
 		v1.POST("/qrcode", api.GenerateQrcode)
 
@@ -28,8 +28,8 @@ func NewRouter() *gin.Engine {
 		v1.POST("user/login", api.UserLoginHandler())
 
 		// 商品操作
-		// v1.GET("product/list", api.ListProductHandler())
-		// v1.GET("product/show", api.ShowProductHandler())
+		v1.GET("product/list", api.ListProductHandler())
+		v1.GET("product/show", api.ShowProductHandler())
 
 		// 需要登录保护的
 		auth := v1.Group("/")
@@ -43,9 +43,9 @@ func NewRouter() *gin.Engine {
 			// 获取用户信息
 			auth.GET("user/show_info", api.ShowUserInfoHandler())
 			// 关注用户
-
+			auth.POST("user/following", api.UserFollowingHandler())
 			// 取关用户
-
+			auth.POST("user/unfollowing", api.UserUnFollowingHandler())
 			// 邮箱验证
 			auth.GET("user/verify_email", api.VerifyEmailHandler())
 			// 绑定邮箱

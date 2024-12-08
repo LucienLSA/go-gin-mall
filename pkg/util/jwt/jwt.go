@@ -2,9 +2,10 @@ package jwt
 
 import (
 	"errors"
-	"ginmall/consts"
+
 	"time"
 
+	"github.com/LucienLSA/go-gin-mall/consts"
 	"github.com/dgrijalva/jwt-go"
 )
 

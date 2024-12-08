@@ -1,11 +1,11 @@
 package qrcode
 
 import (
-	"ginmall/conf"
-	"ginmall/pkg/util/encryption"
-	"ginmall/pkg/util/fileee"
 	"image/jpeg"
 
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/encryption"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/fileee"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 )

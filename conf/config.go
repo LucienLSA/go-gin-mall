@@ -2,10 +2,11 @@ package conf
 
 import (
 	"fmt"
-	"ginmall/pkg/util/logging"
+
 	"os"
 	"time"
 
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
 	"github.com/spf13/viper"
 )
 

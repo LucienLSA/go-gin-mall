@@ -2,8 +2,10 @@ package dao
 
 import (
 	"context"
-	"ginmall/model"
 
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+
+	"github.com/LucienLSA/go-gin-mall/model"
 	"gorm.io/gorm"
 )
 
@@ -44,3 +46,33 @@ func (dao *UserDao) GetUserById(uid uint) (user *model.User, err error) {
 func (dao *UserDao) UpdateUserById(uId uint, user *model.User) error {
 	return dao.DB.Model(&model.User{}).Where("id =?", uId).Updates(user).Error
 }
+
+// 关注用户 FollowUser userId 关注了 followerId
+func (dao *UserDao) FollowUser(uId, followerId uint) (err error) {
+	u, f := new(model.User), new(model.User)
+	dao.DB.Model(&model.User{}).Where("id =?", uId).First(&u)
+	dao.DB.Model(&model.User{}).Where("id =?", followerId).First(&f)
+	err = dao.DB.Model(&f).Association(`Relations`).Append([]model.User{*u})
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return err
+	}
+	return
+}
+
+// 取消关注用户 UnFollowUser userId 取消关注了 followerId
+func (dao *UserDao) UnFollowUser(uId, followerId uint) (err error) {
+	u, f := new(model.User), new(model.User)
+	dao.DB.Model(&model.User{}).Where("id =?", uId).First(&u)
+	dao.DB.Model(&model.User{}).Where("id =?", followerId).First(&f)
+	err = dao.DB.Model(&f).Association(`Relations`).Delete(u)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return err
+	}
+	return
+}
+
+// ListFollowing 展示关注的人 我关注的人
+
+// ListFollower 展示关注者，粉丝，关注我的人

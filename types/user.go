@@ -56,3 +56,11 @@ type BindEmailServiceReq struct {
 type VerifyEmailServiceReq struct {
 	Token string `json:"token" form:"token"`
 }
+
+type UserFollowingReq struct {
+	Id uint `json:"id" form:"id"`
+}
+
+type UserUnFollowingReq struct {
+	Id uint `json:"id" form:"id"`
+}

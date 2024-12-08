@@ -4,18 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ginmall/conf"
-	"ginmall/consts"
-	"ginmall/dao"
-	"ginmall/model"
-	"ginmall/pkg/util/ctl"
-	"ginmall/pkg/util/email"
-	"ginmall/pkg/util/jwt"
-	"ginmall/pkg/util/logging"
-	"ginmall/pkg/util/upload"
-	"ginmall/types"
+
+	"github.com/LucienLSA/go-gin-mall/conf"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/logging"
+
 	"mime/multipart"
 	"sync"
+
+	"github.com/LucienLSA/go-gin-mall/consts"
+	"github.com/LucienLSA/go-gin-mall/dao"
+	"github.com/LucienLSA/go-gin-mall/model"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/email"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/jwt"
+	"github.com/LucienLSA/go-gin-mall/pkg/util/upload"
+	"github.com/LucienLSA/go-gin-mall/types"
 )
 
 var UserSrvIns *UserSrv
@@ -213,9 +216,9 @@ func (s *UserSrv) BindEmail(c context.Context, req *types.BindEmailServiceReq) (
 		return nil, err
 	}
 	binder := email.NewEmailBinder()
-	address = conf.Config.Email.Address + token
+	address = "http://" + conf.Config.System.Host + conf.Config.System.HttpPort + conf.Config.Email.Address + "?token=" + token
 	mailText := fmt.Sprintf(consts.EmailOperationMap[req.OpeartionType], address)
-	if err = binder.Bind(mailText, req.Email, "LucienMall绑定邮箱"); err != nil {
+	if err = binder.Bind(mailText, req.Email, "LucienMall"); err != nil {
 		logging.LogrusObj.Error(err)
 		return
 	}
@@ -284,5 +287,27 @@ func (s *UserSrv) VerifyEmail(c context.Context, req *types.VerifyEmailServiceRe
 		Avatar:    user.AvatarURL(),
 		CreatedAt: user.CreatedAt.Unix(),
 	}
+	return
+}
+
+// 关注用户
+func (s *UserSrv) UserFollow(c context.Context, req *types.UserFollowingReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(c)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	err = dao.NewUserDao(c).FollowUser(u.Id, req.Id)
+	return
+}
+
+// 取消关注用户
+func (s *UserSrv) UserUnFollow(c context.Context, req *types.UserUnFollowingReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(c)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return nil, err
+	}
+	err = dao.NewUserDao(c).UnFollowUser(u.Id, req.Id)
 	return
 }
