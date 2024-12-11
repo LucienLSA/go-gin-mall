@@ -226,3 +226,49 @@ func (s *ProductSrv) ProductSearch(ctx context.Context, req *types.ProductSearch
 	}
 	return
 }
+
+// 获取商品列表图片
+func (s *ProductSrv) ProductImgList(ctx context.Context, req *types.ListProductImgReq) (resp interface{}, err error) {
+	productImgs, _ := dao.NewProductImgDao(ctx).ListProductImgByProductId(req.ID)
+	for i := range productImgs {
+		if conf.Config.System.UploadModel == consts.UploadModeLocal {
+			productImgs[i].ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + productImgs[i].ImgPath
+		}
+	}
+	resp = &types.DataListResp{
+		Item:  productImgs,
+		Total: int64(len(productImgs)),
+	}
+	return
+}
+
+// 删除商品
+func (s *ProductSrv) ProductDelete(ctx context.Context, req *types.ProductDeleteReq) (resp interface{}, err error) {
+	u, _ := ctl.GetUserInfo(ctx)
+	err = dao.NewProductDao(ctx).DeleteProduct(req.ID, u.Id)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	return
+}
+
+// 更新商品信息
+func (s *ProductSrv) ProductUpdate(ctx context.Context, req *types.ProductUpdateReq) (resp interface{}, err error) {
+	product := &model.Product{
+		Name:          req.Name,
+		CategoryID:    req.CategoryID,
+		Title:         req.Title,
+		Info:          req.Info,
+		Price:         req.Price,
+		DiscountPrice: req.DiscountPrice,
+		Num:           req.Num,
+		OnSale:        req.OnSale,
+	}
+	err = dao.NewProductDao(ctx).UpdateProduct(req.ID, product)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	return
+}

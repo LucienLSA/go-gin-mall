@@ -63,3 +63,17 @@ func (dao *ProductDao) SearchProduct(info string, page types.BasePage) (products
 		Count(&count).Error
 	return products, count, err
 }
+
+// 删除商品
+func (dao *ProductDao) DeleteProduct(pId, uId uint) error {
+	return dao.DB.Model(&model.Product{}).
+		Where("id = ? AND boss_id = ?", pId, uId).
+		Delete(&model.Product{}).Error
+}
+
+// 更新商品信息
+func (dao *ProductDao) UpdateProduct(pId uint, product *model.Product) error {
+	return dao.DB.Model(&model.Product{}).
+		Where("id = ?", pId).
+		Updates(product).Error
+}

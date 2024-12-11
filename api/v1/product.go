@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/LucienLSA/go-gin-mall/consts"
@@ -97,6 +98,74 @@ func SearchProductsHandler() gin.HandlerFunc {
 
 		l := service.GetProductSrv()
 		resp, err := l.ProductSearch(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
+// 列出商品图片
+func ListProductImgHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.ListProductImgReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		if req.ID == 0 {
+			err := errors.New("参数错误，id不能为空")
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetProductSrv()
+		resp, err := l.ProductImgList(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
+// 删除商品
+func DeleteProductHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.ProductDeleteReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetProductSrv()
+		resp, err := l.ProductDelete(c.Request.Context(), &req)
+		if err != nil {
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		c.JSON(http.StatusOK, ctl.RespSuccess(c, resp))
+	}
+}
+
+// 更新商品信息
+func UpdateProductHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req types.ProductUpdateReq
+		if err := c.ShouldBind(&req); err != nil {
+			// 参数校验
+			logging.LogrusObj.Infoln(err)
+			c.JSON(http.StatusOK, ErrorResponse(c, err))
+			return
+		}
+		l := service.GetProductSrv()
+		resp, err := l.ProductUpdate(c.Request.Context(), &req)
 		if err != nil {
 			logging.LogrusObj.Infoln(err)
 			c.JSON(http.StatusOK, ErrorResponse(c, err))

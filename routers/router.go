@@ -31,9 +31,9 @@ func NewRouter() *gin.Engine {
 		v1.GET("product/list", api.ListProductHandler())
 		v1.GET("product/show", api.ShowProductHandler())
 		v1.POST("product/search", api.SearchProductsHandler())
-		// v1.GET("product/imgs/list", api.ListProductImgHandler()) // 商品图片列表
-		// v1.GET("category/list", api.ListCategoryHandler())       // 商品分类列表
-		// v1.GET("carousels", api.ListCarouselsHandler())          // 首页轮播图
+		v1.GET("product/imgs/list", api.ListProductImgHandler()) // 商品图片列表
+		v1.GET("category/list", api.ListCategoryHandler())       // 商品分类列表
+		v1.GET("carousels", api.ListCarouselsHandler())          // 首页轮播图
 
 		// 需要登录保护的
 		auth := v1.Group("/")
@@ -57,6 +57,19 @@ func NewRouter() *gin.Engine {
 
 			// 商品操作
 			auth.POST("product/create", api.CreateProductHandler())
+			auth.DELETE("product/delete", api.DeleteProductHandler())
+			auth.PUT("product/update", api.UpdateProductHandler())
+
+			// 收藏夹操作
+			auth.POST("favorites/create", api.CreateFavoritesHandler())
+			auth.DELETE("favorites/delete", api.DeleteFavoritesHandler())
+			// auth.GET("favorites/list", api.ListFavoritesHandler())
+
+			// 购物车操作
+
+			// 订单操作
+
+			// 收获地址操作
 		}
 	}
 	return r
