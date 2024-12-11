@@ -1,0 +1,4 @@
+{"level":"error","msg":"Error 1146 (42S02): Table 'mall_db.product_img' doesn't exist","time":"2024-12-09 14:37:22"}
+{"level":"info","msg":"Error 1146 (42S02): Table 'mall_db.product_img' doesn't exist","time":"2024-12-09 14:37:22"}
+{"level":"info","msg":"Server forced to shutdown: invalid argument","time":"2024-12-09 14:49:07"}
+{"level":"info","msg":"Server forced to shutdown: invalid argument","time":"2024-12-09 14:49:56"}

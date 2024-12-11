@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/LucienLSA/go-gin-mall/conf"
 	"github.com/LucienLSA/go-gin-mall/pkg/util/ctl"
@@ -74,31 +75,154 @@ func (s *ProductSrv) ProductCreate(c context.Context, files []*multipart.FileHea
 		return
 	}
 
-	// // 并发处理文件上传(商品图片)
-	// // 将上传的文件信息存储到数据库
-	// wg := new(sync.WaitGroup)
-	// // 添加待处理的文件数量到waitgroup
-	// wg.Add(len(files))
-	// for index, file := range files {
-	// 	// 生成文件名
-	// 	num := strconv.Itoa(index)
-	// 	// 打开文件
-	// 	tmp, _ = file.Open()
-	// 	// 上传文件
-	// 	if conf.Config.System.UploadModel == consts.UploadModeLocal {
-	// 		path, err = upload.ProductUploadToLocalStatic(tmp, uId, req.Name+num)
-	// 	} else {
-	// 		path, err = upload.ProductUploadToOss(tmp, file.Size)
-	// 	}
-	// 	if err != nil {
-	// 		logging.LogrusObj.Error(err)
-	// 		return
-	// 	}
-	// 	productImg := &model.ProductImg{
-	// 		ProductID: product.ID,
-	// 		ImgPath:   path,
-	// 	}
+	// 并发处理文件上传(商品图片)
+	// 将上传的文件信息存储到数据库
+	wg := new(sync.WaitGroup)
+	// 添加待处理的文件数量到waitgroup
+	wg.Add(len(files))
+	for index, file := range files {
+		// 生成文件名
+		num := strconv.Itoa(index)
+		// 打开文件
+		tmp, _ = file.Open()
+		// 上传文件
+		if conf.Config.System.UploadModel == consts.UploadModeLocal {
+			path, err = upload.ProductUploadToLocalStatic(tmp, uId, req.Name+num)
+		} else {
+			// path, err = upload.ProductUploadToOss(tmp, file.Size)
+		}
+		if err != nil {
+			logging.LogrusObj.Error(err)
+			return
+		}
+		productImg := &model.ProductImg{
+			ProductID: product.ID,
+			ImgPath:   path,
+		}
+		err = dao.NewProductImgDaoByDB(productDao.DB).CreateProductImg(productImg)
+		if err != nil {
+			logging.LogrusObj.Error(err)
+			return
+		}
+		wg.Done()
+	}
+	wg.Wait()
+	return
+}
 
-	// }
+// 列出商品
+func (s *ProductSrv) ProductList(c context.Context, req *types.ProductListReq) (resp interface{}, err error) {
+	var total int64
+	condition := make(map[string]interface{})
+	if req.CategoryID != 0 {
+		condition["category_id"] = req.CategoryID
+	}
+	productDao := dao.NewProductDao(c)
+	products, _ := productDao.ListProductByCondition(condition, req.BasePage)
+	total, err = productDao.CountProductByCondition(condition)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	pRespList := make([]*types.ProductResp, 0)
+	for _, p := range products {
+		pResp := &types.ProductResp{
+			ID:            p.ID,
+			Name:          p.Name,
+			CategoryID:    p.CategoryID,
+			Title:         p.Title,
+			Info:          p.Info,
+			ImgPath:       p.ImgPath,
+			Price:         p.Price,
+			DiscountPrice: p.DiscountPrice,
+			View:          p.View(),
+			CreatedAt:     p.CreatedAt.Unix(),
+			Num:           p.Num,
+			OnSale:        p.OnSale,
+			BossID:        p.BossID,
+			BossName:      p.BossName,
+			BossAvatar:    p.BossAvatar,
+		}
+		if conf.Config.System.UploadModel == consts.UploadModeLocal {
+			pResp.BossAvatar = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.AvatarPath + pResp.BossAvatar
+			pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+		}
+		pRespList = append(pRespList, pResp)
+	}
+	resp = &types.DataListResp{
+		Item:  pRespList,
+		Total: total,
+	}
+	return
+}
+
+// 显示详细商品信息
+func (s *ProductSrv) ProductShow(ctx context.Context, req *types.ProductShowReq) (resp interface{}, err error) {
+	p, err := dao.NewProductDao(ctx).ShowProductById(req.ID)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	pResp := &types.ProductResp{
+		ID:            p.ID,
+		Name:          p.Name,
+		CategoryID:    p.CategoryID,
+		Title:         p.Title,
+		Info:          p.Info,
+		ImgPath:       p.ImgPath,
+		Price:         p.Price,
+		DiscountPrice: p.DiscountPrice,
+		View:          p.View(),
+		CreatedAt:     p.CreatedAt.Unix(),
+		Num:           p.Num,
+		OnSale:        p.OnSale,
+		BossID:        p.BossID,
+		BossName:      p.BossName,
+		BossAvatar:    p.BossAvatar,
+	}
+	if conf.Config.System.UploadModel == consts.UploadModeLocal {
+		pResp.BossAvatar = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.AvatarPath + pResp.BossAvatar
+		pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+	}
+	resp = pResp
+	return
+}
+
+// 搜索商品 TODO后续通过脚本同步数据MySQL到ES ES搜索
+func (s *ProductSrv) ProductSearch(ctx context.Context, req *types.ProductSearchReq) (resp interface{}, err error) {
+	products, count, err := dao.NewProductDao(ctx).SearchProduct(req.Info, req.BasePage)
+	if err != nil {
+		logging.LogrusObj.Error(err)
+		return
+	}
+	pRespList := make([]*types.ProductResp, 0)
+	for _, p := range products {
+		pResp := &types.ProductResp{
+			ID:            p.ID,
+			Name:          p.Name,
+			CategoryID:    p.CategoryID,
+			Title:         p.Title,
+			Info:          p.Info,
+			ImgPath:       p.ImgPath,
+			Price:         p.Price,
+			DiscountPrice: p.DiscountPrice,
+			View:          p.View(),
+			CreatedAt:     p.CreatedAt.Unix(),
+			Num:           p.Num,
+			OnSale:        p.OnSale,
+			BossID:        p.BossID,
+			BossName:      p.BossName,
+			BossAvatar:    p.BossAvatar,
+		}
+		if conf.Config.System.UploadModel == consts.UploadModeLocal {
+			pResp.BossAvatar = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.AvatarPath + pResp.BossAvatar
+			pResp.ImgPath = conf.Config.PhotoPath.PhotoHost + conf.Config.System.HttpPort + conf.Config.PhotoPath.ProductPath + pResp.ImgPath
+		}
+		pRespList = append(pRespList, pResp)
+	}
+	resp = &types.DataListResp{
+		Item:  pRespList,
+		Total: count,
+	}
 	return
 }

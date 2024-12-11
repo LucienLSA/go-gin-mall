@@ -14,6 +14,7 @@ func Migration() (err error) {
 		&model.User{},
 		&model.Product{},
 		&model.Favorite{},
+		&model.ProductImg{},
 	)
 	fmt.Println("register stable success")
 	return

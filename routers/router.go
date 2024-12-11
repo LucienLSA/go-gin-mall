@@ -30,6 +30,10 @@ func NewRouter() *gin.Engine {
 		// 商品操作
 		v1.GET("product/list", api.ListProductHandler())
 		v1.GET("product/show", api.ShowProductHandler())
+		v1.POST("product/search", api.SearchProductsHandler())
+		// v1.GET("product/imgs/list", api.ListProductImgHandler()) // 商品图片列表
+		// v1.GET("category/list", api.ListCategoryHandler())       // 商品分类列表
+		// v1.GET("carousels", api.ListCarouselsHandler())          // 首页轮播图
 
 		// 需要登录保护的
 		auth := v1.Group("/")
